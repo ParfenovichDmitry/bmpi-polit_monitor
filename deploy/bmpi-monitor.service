@@ -1,0 +1,13 @@
+[Unit]
+Description=BMPI Election Monitor - daily collect, compute, publish
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+# change these two lines to your user and clone path
+User=bmpi
+WorkingDirectory=/home/bmpi/bmpi-monitor
+ExecStart=/home/bmpi/bmpi-monitor/deploy/run_daily.sh
+TimeoutStartSec=6h
+Nice=10

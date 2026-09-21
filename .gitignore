@@ -1,0 +1,6 @@
+# raw collected data stays on the server; only docs/ is published
+data/
+.venv/
+__pycache__/
+*.pyc
+logs/

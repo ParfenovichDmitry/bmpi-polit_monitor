@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BMPI Election Monitor</title>
+<meta name="description" content="Daily media-pressure diagnostics (BMPI) for election campaigns, computed from GDELT GKG 2.1.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='1' y='9' width='3' height='6' rx='1' fill='%232a78d6'/%3E%3Crect x='6.5' y='5' width='3' height='10' rx='1' fill='%23e34948'/%3E%3Crect x='12' y='2' width='3' height='13' rx='1' fill='%2352514e'/%3E%3C/svg%3E">
+<style>
+:root{
+  color-scheme:light;
+  --page:#f6f5f2; --surface-1:#fcfcfb; --surface-2:#f0efec; --border:#e2e0db;
+  --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#7a7873;
+  --grid:#e8e6e1; --axis:#b9b6ae; --ink:#3d3c39;
+  --good:#0ca30c; --warning:#fab219; --serious:#ec835a; --critical:#d03b3b;
+  --neutral:#8a887f; --band:rgba(90,88,80,.10); --window:rgba(237,161,0,.13);
+  --radius:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --page:#121211; --surface-1:#1a1a19; --surface-2:#242422; --border:#33322f;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#8f8d84;
+    --grid:#2b2b28; --axis:#55534e; --ink:#d9d8cf;
+    --band:rgba(220,218,205,.10); --window:rgba(201,133,0,.16);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --page:#121211; --surface-1:#1a1a19; --surface-2:#242422; --border:#33322f;
+  --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#8f8d84;
+  --grid:#2b2b28; --axis:#55534e; --ink:#d9d8cf;
+  --band:rgba(220,218,205,.10); --window:rgba(201,133,0,.16);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--page);color:var(--text-primary);
+  font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:24px 16px 64px}
+header.top{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between;margin-bottom:20px}
+h1{font-size:24px;line-height:1.2;margin:0;letter-spacing:-.01em}
+.sub{color:var(--text-secondary);margin:4px 0 0;font-size:14px}
+.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+select,button{font:inherit;font-size:14px;color:var(--text-primary);background:var(--surface-1);border:1px solid var(--border);
+  border-radius:8px;padding:6px 10px;cursor:pointer}
+button:hover,select:hover{background:var(--surface-2)}
+.meta{display:flex;flex-wrap:wrap;gap:6px 18px;color:var(--text-secondary);font-size:13.5px;margin:0 0 18px}
+.meta b{color:var(--text-primary);font-weight:600}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-bottom:22px}
+.tile{background:var(--surface-1);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px 13px;min-width:0}
+.tile .k{font-size:12.5px;color:var(--text-secondary);font-weight:600;letter-spacing:.02em;text-transform:uppercase;margin:0 0 6px}
+.tile .v{font-size:26px;font-weight:650;line-height:1.15;font-variant-numeric:tabular-nums;letter-spacing:-.01em;overflow-wrap:anywhere}
+.tile .v.small{font-size:19px}
+.tile .d{font-size:13px;color:var(--text-secondary);margin-top:6px;line-height:1.4}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--text-primary);
+  background:var(--surface-2);border-radius:999px;padding:2px 9px 2px 7px;margin-top:8px}
+.badge svg{flex:none}
+.swatch{display:inline-block;width:10px;height:10px;border-radius:3px;vertical-align:-1px;margin-right:5px}
+section.card{background:var(--surface-1);border:1px solid var(--border);border-radius:var(--radius);padding:16px 16px 10px;margin-bottom:14px;min-width:0}
+.card h2{font-size:16px;margin:0 0 2px;line-height:1.3}
+.card .cap{color:var(--text-secondary);font-size:13px;margin:0 0 8px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:14px}
+.grid2 section.card{margin-bottom:0}
+.legend{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:13px;color:var(--text-secondary);margin:4px 0 2px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{display:inline-block;width:14px;height:0;border-top:2px solid}
+.legend i.rect{width:10px;height:10px;border:0;border-radius:3px}
+.chart{position:relative;width:100%;height:250px}
+.chart.short{height:200px}
+.chart svg{display:block;width:100%;height:100%;overflow:visible}
+.chart text{font-size:11.5px;fill:var(--text-muted);font-variant-numeric:tabular-nums}
+.tip{position:absolute;pointer-events:none;background:var(--surface-1);border:1px solid var(--border);border-radius:8px;
+  padding:7px 10px;font-size:12.5px;box-shadow:0 4px 16px rgba(0,0,0,.12);min-width:150px;z-index:5;display:none;white-space:nowrap}
+.tip .t{color:var(--text-secondary);margin-bottom:3px}
+.tip .r{display:flex;align-items:center;gap:7px}
+.tip .r b{font-variant-numeric:tabular-nums;min-width:52px}
+.tip .r i{display:inline-block;width:12px;border-top:2px solid}
+.tip .r span{color:var(--text-secondary)}
+table{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+th{color:var(--text-secondary);font-weight:600;font-size:12.5px}
+.tablewrap{overflow-x:auto}
+details{margin-top:6px}
+summary{cursor:pointer;color:var(--text-secondary);font-size:13px;padding:4px 0}
+.explain{margin-top:28px}
+.explain h2{font-size:20px;margin:0 0 8px}
+.explain h3{font-size:15.5px;margin:20px 0 6px}
+.explain p,.explain li{color:var(--text-secondary);max-width:80ch}
+.explain p b,.explain li b{color:var(--text-primary)}
+.explain code{font-size:13px;background:var(--surface-2);padding:1px 5px;border-radius:5px;color:var(--text-primary)}
+.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13.5px;background:var(--surface-2);
+  border-radius:8px;padding:10px 12px;margin:8px 0;overflow-x:auto;white-space:pre;color:var(--text-primary)}
+footer{margin-top:32px;color:var(--text-muted);font-size:12.5px;border-top:1px solid var(--border);padding-top:14px}
+footer a,.explain a{color:inherit}
+.empty{color:var(--text-muted);font-size:13.5px;padding:18px 0}
+.err{background:var(--surface-1);border:1px solid var(--border);border-radius:var(--radius);padding:18px}
+@media (max-width:520px){ .tile .v{font-size:22px} h1{font-size:21px} .chart{height:220px} }
+
+/* tabs, filters, overview */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin:0 0 18px;overflow-x:auto;scrollbar-width:none;position:sticky;top:0;background:var(--page);z-index:10}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{border:0;background:none;border-radius:0;padding:10px 14px;color:var(--text-secondary);font-weight:600;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button:hover{background:none;color:var(--text-primary)}
+.tabs button[aria-selected="true"]{color:var(--text-primary);border-bottom-color:var(--text-primary)}
+.verdict{background:var(--surface-1);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;margin-bottom:14px}
+.verdict .badge{margin-top:0}
+.verdict p{margin:8px 0 0;font-size:16px;line-height:1.55;max-width:95ch}
+.tiles.four{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+.khead{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.khead .k{margin:0 0 6px}
+button.info{flex:none;width:22px;height:22px;padding:0;border-radius:50%;font-size:12.5px;font-weight:700;color:var(--text-secondary);line-height:20px;text-align:center}
+button.info[aria-expanded="true"]{background:var(--text-primary);color:var(--surface-1);border-color:var(--text-primary)}
+.infotext{margin-top:10px;padding-top:10px;border-top:1px dashed var(--border);font-size:13px;color:var(--text-secondary);line-height:1.5}
+.grid2.ov{grid-template-columns:minmax(0,1.7fr) minmax(0,1fr)}
+@media (max-width:900px){.grid2.ov{grid-template-columns:minmax(0,1fr)}}
+.chart.tall{height:400px}
+.grid2.ov .chart{height:320px}
+.tiles{align-items:start}
+.chart.square{height:320px}
+.chart text.q{fill:var(--text-muted);font-size:11.5px}
+.chart text.qa{fill:var(--text-primary);font-size:12px;font-weight:650}
+.filters{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+.seg{display:inline-flex;background:var(--surface-2);border-radius:9px;padding:3px;gap:2px;flex-wrap:wrap}
+.seg button{border:0;background:none;padding:6px 12px;border-radius:7px;color:var(--text-secondary);font-weight:600;font-size:13.5px}
+.seg button:hover{background:none;color:var(--text-primary)}
+.seg button[aria-checked="true"]{background:var(--surface-1);color:var(--text-primary);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.more{display:flex;gap:18px;flex-wrap:wrap;margin:14px 0 0}
+button.link{border:0;background:none;padding:0;color:var(--text-secondary);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+button.link:hover{background:none;color:var(--text-primary)}
+.panel .explain{margin-top:0}
+@media (max-width:520px){ .tabs button{padding:10px 9px} .chart.tall{height:300px} .chart.square{height:290px} .verdict p{font-size:15px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1 id="title">BMPI Election Monitor</h1>
+      <p class="sub" id="subtitle">Media-pressure diagnostics from GDELT GKG 2.1, updated daily</p>
+    </div>
+    <div class="controls">
+      <label for="campaign" class="sub" style="margin:0">Campaign</label>
+      <select id="campaign" aria-label="Campaign"></select>
+      <button id="theme" type="button" aria-label="Toggle colour theme">Theme</button>
+    </div>
+  </header>
+
+  <div id="app"><p class="empty">Loading…</p></div>
+
+  <div id="explainHome" hidden><div class="explain" id="explain">
+    <h2>How to read this page</h2>
+    <p>This monitor applies the diagnostic protocol from the article <i>“Hidden media reversal in election campaigns: regime changes in the media field across nine elections (2016–2026)”</i> to a running campaign. It measures how the <b>news media field</b> treats two contenders day by day. It is a diagnostic instrument, like a poll of the media rather than of voters: it describes the state of coverage, <b>not the election result</b>.</p>
+
+    <h3>1. What is measured</h3>
+    <p>Every 15 minutes GDELT publishes machine-coded metadata (GKG 2.1) for news articles worldwide. The bot keeps articles that mention an actor through the configured keyword list and records the article’s average tone (first element of <code>V2Tone</code>; negative = unfavourable wording). Two streams are collected: the <b>English stream</b> (restricted to US domestic outlets for US campaigns) and the <b>Translingual stream</b> (non-English press, machine-translated by GDELT).</p>
+
+    <h3>2. From tone to pressure: pBMPI</h3>
+    <div class="formula">z(t)   = (tone(t) − mean_30d) / sd_30d        rolling z-score, W = 30 days, ≥ 15 obs, clipped to ±4
+L(t)   = 1 / (1 + e^z(t))                     pBMPI, bounded in (0, 1)
+ΔpBMPI = −(L_A − L_B)                         field balance between the two actors</div>
+    <p><b>L</b> is the BMPI “lens” carried over from the financial-market version of the index (BMPI<sub>t</sub> = σ((1−w)·z<sub>mentions</sub> + w·(−z<sub>tone</sub>)) with w = 1, i.e. tone only). Only the window changes: 30 days instead of 365, because campaigns are short. <b>L &gt; 0.5</b> means today’s coverage is harsher than the actor’s own last 30 days; <b>L &lt; 0.5</b> means it is milder. Each actor is compared with itself, so a party that is always covered negatively is not penalised for that baseline.</p>
+    <p><b>ΔpBMPI &gt; 0</b>: the field is tilted in favour of actor A (A is under relatively less pressure than B). <b>ΔpBMPI &lt; 0</b>: tilted in favour of B. Values near 0: balanced.</p>
+
+    <h3>3. Indicators and their thresholds</h3>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Indicator</th><th>What it answers</th><th>How to read it</th><th>Threshold / frame</th></tr></thead>
+      <tbody>
+        <tr><td><b>Change point</b> (H1)</td><td>Did the field switch regime during the campaign window?</td><td>Date where the mean of ΔpBMPI shifts most (max |t|); sign of t shows in whose favour. Grey band = 95% CI of the date.</td><td><b>p &lt; 0.05</b> shift detected · 0.05–0.10 borderline · <b>p ≥ 0.10</b> no shift. p is calibrated (block bootstrap B = 1999 + 300 AR(1) surrogates).</td></tr>
+        <tr><td><b>Field level</b></td><td>Who is ahead in the media field right now?</td><td>Mean ΔpBMPI over the last 3 days.</td><td>|level| &lt; 0.05 ≈ balanced; sign names the leader. A level is not a reversal.</td></tr>
+        <tr><td><b>Direction ΔD</b></td><td>Whose tone is improving relative to the other?</td><td>ΔD = z<sub>C</sub> − z<sub>F</sub>, averaged over the last 10 days and oriented towards the counter-candidate C (F = poll favourite).</td><td>&gt; 0 tone moves towards C · &lt; 0 towards the favourite. Days-count shows how many of the 10 days agree.</td></tr>
+        <tr><td><b>Pressure ΔM</b></td><td>Around whom is coverage most unusual (salience), regardless of sign?</td><td>ΔM = |z<sub>C</sub>| − |z<sub>F</sub>|, last 10 days.</td><td>&gt; 0 pressure concentrates on C · &lt; 0 on the favourite.</td></tr>
+        <tr><td><b>Upset signal</b> (H4)</td><td>Does the end of the campaign carry the signature seen before upsets?</td><td>ΔM oriented to the counter-candidate over the <b>10 days before election day</b>.</td><td>&gt; 0 = signal on. Evaluated only once that window starts; before it, the value is shown as provisional.</td></tr>
+        <tr><td><b>Stream symmetry</b></td><td>Is a data stream fit to compare the two actors?</td><td>min/max of the actors’ mention counts in the window.</td><td>&lt; 0.10 stream unusable; if both streams are usable they are combined (duplicate URLs removed).</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>4. Regime typology (direction × pressure)</h3>
+    <div class="tablewrap"><table>
+      <thead><tr><th></th><th>Pressure ΔM on counter-candidate (&gt; 0)</th><th>Pressure ΔM on favourite (&lt; 0)</th></tr></thead>
+      <tbody>
+        <tr><th>Direction ΔD towards counter-candidate (&gt; 0)</th><td><b>Full reversal</b> — tone and attention both move to the challenger (USA 2016 pattern).</td><td><b>Tonal shift without pressure</b> — tone improves for the challenger, but attention stays on the favourite.</td></tr>
+        <tr><th>Direction ΔD towards favourite (&lt; 0)</th><td><b>Quiet challenge</b> — tone still favours the favourite, but coverage concentrates on the challenger (Poland 2025 pattern).</td><td><b>Consolidation</b> — the field stays with the favourite.</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>5. Limits of interpretation</h3>
+    <ul>
+      <li><b>Diagnostic, not a forecast.</b> The indicators describe media coverage. In the article’s nine elections a significant hidden reversal was found once (USA 2016); H4 matched 7 of 8 outcomes but is not statistically established (Fisher p = 0.107).</li>
+      <li><b>Daily re-testing.</b> The change-point test is recomputed every day on a growing window. Watching a p-value every day inflates false alarms; treat intermediate p-values as descriptive. The confirmatory reading is the one computed on the complete window after the last pre-election day.</li>
+      <li><b>Favourite</b> is set manually from public polls (config), following the article’s rule (mean of polls in the 30 days before the window). It is not scraped automatically.</li>
+      <li><b>Coverage.</b> GDELT over-represents English-language and online media; the Translingual stream reflects foreign coverage, which can be dominated by one actor (e.g. a sitting president’s party). Low daily counts make single days noisy — read 5–10 day patterns, not single bars.</li>
+      <li><b>Multi-seat contests</b> (e.g. a legislature) are reduced to two blocs; district-level dynamics are invisible here.</li>
+      <li>Media coverage in systems with a non-free or partly free press may not satisfy the method’s assumptions; extreme asymmetry of coverage is a signal of limited pluralism, not by itself an explanation of it.</li>
+    </ul>
+
+    <h3>6. Data and reproducibility</h3>
+    <p>Source: GDELT Project, GKG 2.1 (English and Translingual 15-minute files). Every run stores the matched mentions and a per-interval download log on the server; the page shows the share of missing 15-minute intervals. Code, configuration and the full method are in the repository.</p>
+  </div></div>
+
+  <footer id="footer">BMPI Election Monitor · method: D. Parfenovich (PJATK) · data: GDELT Project (GKG 2.1)</footer>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

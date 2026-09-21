@@ -1,0 +1,124 @@
+# BMPI Election Monitor configuration.
+# Each campaign is a two-actor contest. Add a new campaign by copying the block below.
+
+site:
+  title: "BMPI Election Monitor"
+  subtitle: "Media-pressure diagnostics from GDELT GKG 2.1, updated daily"
+  author: "Dmitry Parfenovich (PJATK)"
+  repo_url: ""            # optional, e.g. https://github.com/<user>/bmpi-monitor
+
+method:
+  z_window: 30            # rolling z-score window, days
+  z_min_obs: 15           # minimum observations before z is computed
+  z_clip: 4.0
+  ddm_days: 10            # length of the direction/pressure (ΔD/ΔM) window
+  level_days: 3           # days averaged for the end-of-series ΔpBMPI level
+  bootstrap_B: 1999       # moving-block bootstrap replications
+  ar1_surrogates: 300     # AR(1) surrogates for size calibration
+  inner_B: 149            # bootstrap replications inside each surrogate
+  min_ratio: 0.10         # stream symmetry threshold (min/max mentions)
+  seed: 2026
+
+gdelt:
+  base_url: "http://data.gdeltproject.org/gdeltv2"
+  workers: 4              # parallel downloads
+  timeout: 60
+  retries: 4
+  # a 15-minute file that still returns 404 this many days later is recorded as MISSING
+  give_up_after_days: 2
+
+campaigns:
+  - id: usa-congress-2026
+    name: "US Congress 2026 (midterms)"
+    active: true
+    election_date: "2026-11-03"
+    data_start: "2026-06-01"      # first day collected (includes z-score warm-up)
+    window_start: "2026-07-01"    # campaign window used for the change-point test
+    streams: [english, translation]
+    # English stream is restricted to US domestic outlets (see us_domains.txt)
+    english_domain_whitelist: us_domains.txt
+    favorite:
+      actor: DemocraticBloc
+      rule: "Mean of public generic-ballot polls in the 30 days before the window end"
+      value: "D +7.3 to +8.1"
+      source: "RealClearPolling, Silver Bulletin, Decision Desk HQ averages"
+      as_of: "2026-09-19"
+    actors:
+      - id: RepublicanBloc
+        label: "Republicans"
+        color: "#e34948"
+        color_dark: "#e66767"
+        keywords:
+          - republicans in congress
+          - house republicans
+          - senate republicans
+          - u.s. house republicans
+          - u.s. senate republicans
+          - congressional republicans
+          - washington republicans
+          - capitol hill republicans
+          - gop lawmakers
+          - gop congress
+          - gop majority
+          - gop house majority
+          - gop senate majority
+          - republican house majority
+          - republican senate majority
+          - republican congressman
+          - republican congresswoman
+          - republican senator
+          - republican-controlled house
+          - republican-controlled senate
+          - house gop
+          - senate gop
+          - gop midterm
+          - republican midterm campaign
+          - republican congressional candidate
+          - keep the house republican
+          - flip the house republican
+          - national republican congressional committee
+          - national republican senatorial committee
+          - республиканцы в конгрессе сша
+          - республиканцы палаты представителей сша
+          - республиканцы сената сша
+          - республиканское большинство в конгрессе сша
+          - республиканский сенатор сша
+          - республиканский конгрессмен сша
+          - промежуточные выборы в конгресс сша республиканцы
+      - id: DemocraticBloc
+        label: "Democrats"
+        color: "#2a78d6"
+        color_dark: "#3987e5"
+        keywords:
+          - democrats in congress
+          - house democrats
+          - senate democrats
+          - u.s. house democrats
+          - u.s. senate democrats
+          - congressional democrats
+          - washington democrats
+          - capitol hill democrats
+          - democratic lawmakers
+          - democratic house majority
+          - democratic senate majority
+          - democratic congressman
+          - democratic congresswoman
+          - democratic senator
+          - democratic-controlled house
+          - democratic-controlled senate
+          - house democratic caucus
+          - senate democratic caucus
+          - democratic midterm
+          - democratic midterm campaign
+          - democratic congressional candidate
+          - flip the house democratic
+          - take back the house democrats
+          - democratic congressional campaign committee
+          - democratic senatorial campaign committee
+          - демократы в конгрессе сша
+          - демократы палаты представителей сша
+          - демократы сената сша
+          - демократическое большинство в конгрессе сша
+          - демократический сенатор сша
+          - демократический конгрессмен сша
+          - промежуточные выборы в конгресс сша демократы
