@@ -9,5 +9,16 @@
   "D10": -0.2093,
   "M10": 0.3616,
   "typology": "quiet challenge"
+ },
+ {
+  "last_data_day": "2026-09-20",
+  "cp_date": "2026-08-09",
+  "t": 1.629,
+  "p": 0.8372,
+  "favours": "RepublicanBloc",
+  "level": 0.0197,
+  "D10": 0.0251,
+  "M10": 0.596,
+  "typology": "full reversal"
  }
 ]
