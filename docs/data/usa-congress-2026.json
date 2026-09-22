@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-09-21 18:17 UTC",
+ "generated_at": "2026-09-22 03:43 UTC",
  "campaign": {
   "id": "usa-congress-2026",
   "name": "US Congress 2026 (midterms)",
@@ -28,8 +28,8 @@
    }
   ]
  },
- "last_data_day": "2026-09-20",
- "days_to_election": 43,
+ "last_data_day": "2026-09-21",
+ "days_to_election": 42,
  "missing_pct": {
   "english": 0.0,
   "translation": 0.0
@@ -52,41 +52,41 @@
  ],
  "window": [
   "2026-07-01",
-  "2026-09-20"
+  "2026-09-21"
  ],
- "n": 82,
+ "n": 83,
  "changepoint": {
   "date": "2026-08-09",
-  "t": 1.629,
-  "delta": 0.0964,
-  "p": 0.8372,
-  "p_raw": 0.735,
-  "test_size": 0.05,
+  "t": 1.464,
+  "delta": 0.0869,
+  "p": 0.9502,
+  "p_raw": 0.8305,
+  "test_size": 0.063,
   "ci": [
-   "2026-07-18",
+   "2026-07-17",
    "2026-09-05"
   ],
   "favours": "RepublicanBloc",
   "pre_mean": -0.0322,
-  "post_mean": 0.0642
+  "post_mean": 0.0547
  },
  "level": {
   "days": 3,
-  "value": 0.0197,
-  "leader": "RepublicanBloc"
+  "value": -0.0515,
+  "leader": "DemocraticBloc"
  },
  "ddm": {
   "days": 10,
   "window": [
-   "2026-09-11",
-   "2026-09-20"
+   "2026-09-12",
+   "2026-09-21"
   ],
-  "D_to_counter": 0.0251,
-  "M_to_counter": 0.596,
-  "D_days_to_counter": 6,
-  "M_days_to_counter": 8,
-  "typology": "full reversal",
-  "typology_text": "Direction and pressure both move towards the counter-candidate."
+  "D_to_counter": -0.1504,
+  "M_to_counter": 0.5696,
+  "D_days_to_counter": 5,
+  "M_days_to_counter": 7,
+  "typology": "quiet challenge",
+  "typology_text": "Tone favours the favourite, but media pressure concentrates on the counter-candidate."
  },
  "h4": {
   "window": [
@@ -98,21 +98,21 @@
   "days_available": 0,
   "M_to_counter": null,
   "signal": null,
-  "provisional_M_to_counter": 0.596
+  "provisional_M_to_counter": 0.5696
  },
  "symmetry": {
   "english": {
    "counts": {
-    "RepublicanBloc": 3004,
-    "DemocraticBloc": 2228
+    "RepublicanBloc": 3022,
+    "DemocraticBloc": 2237
    },
-   "ratio": 0.742,
+   "ratio": 0.74,
    "usable": true
   },
   "translation": {
    "counts": {
-    "RepublicanBloc": 4640,
-    "DemocraticBloc": 841
+    "RepublicanBloc": 4672,
+    "DemocraticBloc": 845
    },
    "ratio": 0.181,
    "usable": true
@@ -207,7 +207,8 @@
    "2026-09-17",
    "2026-09-18",
    "2026-09-19",
-   "2026-09-20"
+   "2026-09-20",
+   "2026-09-21"
   ],
   "L_A": [
    0.3822,
@@ -291,7 +292,8 @@
    0.7964,
    0.5663,
    0.8997,
-   0.0474
+   0.0474,
+   0.6583
   ],
   "L_B": [
    0.288,
@@ -375,7 +377,8 @@
    0.5577,
    0.4283,
    0.8668,
-   0.2775
+   0.2775,
+   0.3065
   ],
   "dp": [
    -0.0942,
@@ -459,7 +462,8 @@
    -0.2387,
    -0.138,
    -0.033,
-   0.2301
+   0.2301,
+   -0.3518
   ],
   "D": [
    -0.425,
@@ -543,7 +547,8 @@
    -1.1321,
    -0.5556,
    -0.3215,
-   2.0447
+   2.0447,
+   -1.4724
   ],
   "M": [
    -0.425,
@@ -627,7 +632,8 @@
    1.1321,
    -0.0218,
    0.3215,
-   2.0447
+   2.0447,
+   -0.1607
   ],
   "n_A": [
    64,
@@ -711,7 +717,8 @@
    159,
    80,
    161,
-   26
+   26,
+   50
   ],
   "n_B": [
    37,
@@ -795,7 +802,8 @@
    44,
    52,
    21,
-   7
+   7,
+   13
   ],
   "tone_A": [
    -1.603,
@@ -879,7 +887,8 @@
    -2.439,
    -1.903,
    -2.767,
-   -0.313
+   -0.313,
+   -2.115
   ],
   "tone_B": [
    -1.169,
@@ -963,39 +972,40 @@
    -1.826,
    -1.55,
    -2.682,
-   -1.22
+   -1.22,
+   -1.314
   ]
  },
  "sensitivity": [
   {
    "variant": "english+translation (stream rule)",
    "cp_date": "2026-08-09",
-   "t": 1.629,
-   "p": 0.8372,
+   "t": 1.464,
+   "p": 0.9502,
    "favours": "RepublicanBloc",
-   "D_to_counter": 0.0251,
-   "M_to_counter": 0.596,
-   "typology": "full reversal"
+   "D_to_counter": -0.1504,
+   "M_to_counter": 0.5696,
+   "typology": "quiet challenge"
   },
   {
    "variant": "english only",
    "cp_date": "2026-07-29",
-   "t": -2.542,
-   "p": 0.515,
+   "t": -2.594,
+   "p": 0.5183,
    "favours": "DemocraticBloc",
-   "D_to_counter": 0.0184,
-   "M_to_counter": 0.0532,
-   "typology": "full reversal"
+   "D_to_counter": -0.0712,
+   "M_to_counter": 0.1428,
+   "typology": "quiet challenge"
   },
   {
    "variant": "translation only",
    "cp_date": "2026-08-07",
-   "t": 2.091,
-   "p": 0.3621,
+   "t": 1.921,
+   "p": 0.4618,
    "favours": "RepublicanBloc",
-   "D_to_counter": 0.1609,
-   "M_to_counter": 0.5555,
-   "typology": "full reversal"
+   "D_to_counter": -0.0159,
+   "M_to_counter": 0.4208,
+   "typology": "quiet challenge"
   }
  ]
 }
