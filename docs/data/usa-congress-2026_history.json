@@ -240,5 +240,16 @@
   "D10": -0.211,
   "M10": -0.0926,
   "typology": "consolidation"
+ },
+ {
+  "last_data_day": "2026-10-11",
+  "cp_date": "2026-09-16",
+  "t": -1.24,
+  "p": 0.9435,
+  "favours": "DemocraticBloc",
+  "level": -0.1869,
+  "D10": -0.5365,
+  "M10": 0.1059,
+  "typology": "quiet challenge"
  }
 ]
