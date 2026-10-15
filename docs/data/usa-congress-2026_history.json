@@ -273,5 +273,16 @@
   "D10": -0.7527,
   "M10": -0.1346,
   "typology": "consolidation"
+ },
+ {
+  "last_data_day": "2026-10-14",
+  "cp_date": "2026-09-16",
+  "t": -1.313,
+  "p": 0.9037,
+  "favours": "DemocraticBloc",
+  "level": -0.0429,
+  "D10": -0.7665,
+  "M10": -0.1283,
+  "typology": "consolidation"
  }
 ]
