@@ -317,5 +317,16 @@
   "D10": -0.355,
   "M10": 0.2712,
   "typology": "quiet challenge"
+ },
+ {
+  "last_data_day": "2026-10-18",
+  "cp_date": "2026-09-27",
+  "t": -1.508,
+  "p": 0.8339,
+  "favours": "DemocraticBloc",
+  "level": -0.0321,
+  "D10": -0.3825,
+  "M10": 0.2183,
+  "typology": "quiet challenge"
  }
 ]
