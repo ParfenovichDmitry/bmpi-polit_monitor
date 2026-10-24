@@ -372,5 +372,16 @@
   "D10": -0.0176,
   "M10": -0.1199,
   "typology": "consolidation"
+ },
+ {
+  "last_data_day": "2026-10-23",
+  "cp_date": "2026-09-16",
+  "t": -1.206,
+  "p": 0.9203,
+  "favours": "DemocraticBloc",
+  "level": 0.0954,
+  "D10": 0.1374,
+  "M10": -0.1501,
+  "typology": "tonal shift without pressure"
  }
 ]
