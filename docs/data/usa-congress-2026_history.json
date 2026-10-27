@@ -405,5 +405,16 @@
   "D10": 0.2715,
   "M10": -0.3034,
   "typology": "tonal shift without pressure"
+ },
+ {
+  "last_data_day": "2026-10-26",
+  "cp_date": "2026-10-04",
+  "t": -1.31,
+  "p": 0.9435,
+  "favours": "DemocraticBloc",
+  "level": 0.0677,
+  "D10": 0.4639,
+  "M10": -0.3909,
+  "typology": "tonal shift without pressure"
  }
 ]
