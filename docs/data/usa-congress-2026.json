@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-03 03:38 UTC",
+ "generated_at": "2026-11-04 03:32 UTC",
  "campaign": {
   "id": "usa-congress-2026",
   "name": "US Congress 2026 (midterms)",
@@ -29,7 +29,7 @@
   ]
  },
  "last_data_day": "2026-11-02",
- "days_to_election": 0,
+ "days_to_election": -1,
  "missing_pct": {
   "english": 0.0,
   "translation": 0.0
